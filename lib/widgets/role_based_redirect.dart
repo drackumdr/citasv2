@@ -1,11 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:citas_v2/screens/login_screen.dart';
-import 'package:citas_v2/screens/admin_dashboard.dart';
-import 'package:citas_v2/screens/doctor_dashboard.dart';
 import 'package:citas_v2/screens/patient_dashboard.dart';
-import 'package:citas_v2/theme/app_theme.dart';
+import 'package:citas_v2/screens/doctor_dashboard.dart';
+import 'package:citas_v2/screens/admin_dashboard.dart';
 
 class RoleBasedRedirect extends StatelessWidget {
   const RoleBasedRedirect({super.key});
@@ -15,130 +14,122 @@ class RoleBasedRedirect extends StatelessWidget {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
+        // Show loading while waiting for auth state
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return _buildLoadingScreen(
-              message: 'Verificando estado de autenticación...');
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
         }
 
-        if (!snapshot.hasData) return const LoginScreen();
+        // If not logged in, show login screen
+        final user = snapshot.data;
+        if (user == null) {
+          return const LoginScreen();
+        }
 
+        // User is logged in, check role in Firestore
         return FutureBuilder<DocumentSnapshot>(
           future: FirebaseFirestore.instance
               .collection('usuarios')
-              .doc(snapshot.data!.uid)
-              .get(),
-          builder: (context, userSnapshot) {
-            if (userSnapshot.connectionState == ConnectionState.waiting) {
-              return _buildLoadingScreen(
-                  message: 'Cargando datos de usuario...');
+              .where('email', isEqualTo: user.email)
+              .limit(1)
+              .get()
+              .then((snapshot) {
+            if (snapshot.docs.isNotEmpty) {
+              return FirebaseFirestore.instance
+                  .collection('usuarios')
+                  .doc(snapshot.docs.first.id)
+                  .get();
+            }
+            throw Exception('Usuario no encontrado');
+          }),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
             }
 
-            if (!userSnapshot.hasData || userSnapshot.hasError) {
-              return _buildErrorScreen(context);
+            if (snapshot.hasError ||
+                !snapshot.hasData ||
+                snapshot.data == null) {
+              // Error or user not found in database
+              return Scaffold(
+                body: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Error: No se pudo obtener la información del usuario",
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () async {
+                          await FirebaseAuth.instance.signOut();
+                        },
+                        child: const Text("Volver a iniciar sesión"),
+                      ),
+                    ],
+                  ),
+                ),
+              );
             }
 
-            Map<String, dynamic>? userData =
-                userSnapshot.data!.data() as Map<String, dynamic>?;
+            // Get user role and redirect accordingly
+            final userData = snapshot.data!.data() as Map<String, dynamic>?;
+            final String userRole = userData?['rol'] ?? 'paciente';
+            final bool isSuspended = userData?['isSuspended'] ?? false;
 
-            // If userData is null or role is not set, default to patient role
-            String role = 'paciente';
-            if (userData != null) {
-              // Check both 'role' and 'rol' keys for compatibility
-              role = userData['rol'] ?? userData['role'] ?? 'paciente';
+            // Check if user is suspended
+            if (isSuspended) {
+              return _buildSuspendedScreen();
             }
 
-            if (role == 'admin') return const AdminDashboard();
-            if (role == 'doctor') return const DoctorDashboard();
-            return PatientDashboard(user: snapshot.data!);
+            // Redirect based on role
+            switch (userRole) {
+              case 'admin':
+                return const AdminDashboard();
+              case 'doctor':
+                return const DoctorDashboard();
+              case 'paciente':
+              default:
+                return PatientDashboard(user: user);
+            }
           },
         );
       },
     );
   }
 
-  Widget _buildLoadingScreen({required String message}) {
+  Widget _buildSuspendedScreen() {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              AppTheme.primaryColor.withOpacity(0.8),
-              AppTheme.secondaryColor,
-            ],
-          ),
-        ),
-        child: Center(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Hero(
-                tag: 'appLogo',
-                child: Icon(
-                  Icons.calendar_month_rounded,
-                  size: 72,
-                  color: Colors.white.withOpacity(0.9),
-                ),
+              const Icon(Icons.block, size: 80, color: Colors.red),
+              const SizedBox(height: 24),
+              const Text(
+                'Cuenta suspendida',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Tu cuenta ha sido suspendida. Contacta al administrador para más información.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 32),
-              const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                message,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
+              ElevatedButton(
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut();
+                },
+                child: const Text('Cerrar sesión'),
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildErrorScreen(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(color: AppTheme.backgroundColor),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.warning_amber_rounded,
-                  size: 80,
-                  color: AppTheme.warningColor,
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  'Error al cargar datos del usuario',
-                  style: AppTheme.headingStyle,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'No se han podido cargar tus datos. Por favor, intenta iniciar sesión nuevamente.',
-                  style: AppTheme.bodyStyle,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 32),
-                ElevatedButton.icon(
-                  onPressed: () async {
-                    await FirebaseAuth.instance.signOut();
-                  },
-                  icon: const Icon(Icons.login),
-                  label: const Text('Volver a inicio de sesión'),
-                  style: AppTheme.primaryButtonStyle,
-                ),
-              ],
-            ),
           ),
         ),
       ),

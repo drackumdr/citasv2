@@ -4,6 +4,7 @@ import 'package:citas_v2/services/auth_service.dart';
 import 'package:citas_v2/theme/app_theme.dart';
 import 'package:citas_v2/widgets/dashboard_card.dart';
 import 'package:citas_v2/widgets/user_profile_header.dart';
+import 'package:citas_v2/screens/doctors_list_screen.dart';
 
 class PatientDashboard extends StatelessWidget {
   final User user;
@@ -39,12 +40,13 @@ class PatientDashboard extends StatelessWidget {
               name: user.displayName ?? 'Usuario',
               email: user.email ?? '',
               role: 'Paciente',
+              photoUrl: user.photoURL,
             ),
             const SizedBox(height: 24),
 
             // Patient dashboard content
             const Text(
-              'Mis Citas',
+              'Mis Opciones',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
@@ -58,11 +60,16 @@ class PatientDashboard extends StatelessWidget {
               mainAxisSpacing: 16,
               children: [
                 DashboardCard(
-                  title: 'Agendar Cita',
-                  icon: Icons.add_circle,
+                  title: 'Buscar Médico',
+                  icon: Icons.search,
                   color: Colors.blue,
                   onTap: () {
-                    // Navigate to appointment booking
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const DoctorsListScreen(),
+                      ),
+                    );
                   },
                 ),
                 DashboardCard(
@@ -90,6 +97,63 @@ class PatientDashboard extends StatelessWidget {
                   },
                 ),
               ],
+            ),
+
+            const SizedBox(height: 24),
+
+            // Upcoming appointments section
+            const Text(
+              'Próximas Citas',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+
+            // Placeholder for upcoming appointments
+            // You would typically use a StreamBuilder with Firestore here
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.info_outline,
+                      color: Colors.blue[300],
+                      size: 32,
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'No tienes citas próximas',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Busca un médico y agenda una cita',
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const DoctorsListScreen(),
+                            ),
+                          );
+                        },
+                        child: const Text('Buscar Médicos'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),

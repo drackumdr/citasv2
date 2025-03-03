@@ -1,128 +1,80 @@
 import 'package:flutter/material.dart';
-import 'package:citas_v2/theme/app_theme.dart';
 
 class UserProfileHeader extends StatelessWidget {
+  final Color roleColor;
   final String name;
   final String email;
   final String role;
   final String? photoUrl;
-  final Color roleColor;
-  final VoidCallback? onProfileTap;
 
   const UserProfileHeader({
-    Key? key,
+    super.key,
+    required this.roleColor,
     required this.name,
     required this.email,
     required this.role,
     this.photoUrl,
-    required this.roleColor,
-    this.onProfileTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: InkWell(
-          onTap: onProfileTap,
-          borderRadius: BorderRadius.circular(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 30,
+              backgroundImage:
+                  photoUrl != null ? NetworkImage(photoUrl!) : null,
+              child:
+                  photoUrl == null ? const Icon(Icons.person, size: 30) : null,
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  GestureDetector(
-                    onTap: onProfileTap,
-                    child: CircleAvatar(
-                      radius: 36,
-                      backgroundColor: roleColor.withOpacity(0.1),
-                      child: photoUrl != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(36),
-                              child: Image.network(
-                                photoUrl!,
-                                width: 72,
-                                height: 72,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    Icon(Icons.person,
-                                        size: 36, color: roleColor),
-                              ),
-                            )
-                          : Icon(Icons.person, size: 36, color: roleColor),
+                  Text(
+                    name,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          name,
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          email,
-                          style: TextStyle(
-                            color: AppTheme.secondaryTextColor,
-                            fontSize: 14,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: roleColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            _getRoleDisplayName(role),
-                            style: TextStyle(
-                              color: roleColor,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
-                      ],
+                  Text(
+                    email,
+                    style: TextStyle(
+                      color: Colors.grey[600],
                     ),
                   ),
-                  if (onProfileTap != null)
-                    IconButton(
-                      icon: const Icon(Icons.edit_outlined),
-                      onPressed: onProfileTap,
-                      tooltip: 'Editar perfil',
-                      color: AppTheme.primaryColor,
+                  const SizedBox(height: 4),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
                     ),
+                    decoration: BoxDecoration(
+                      color: roleColor.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      role,
+                      style: TextStyle(
+                        color: roleColor,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
-  }
-
-  String _getRoleDisplayName(String roleKey) {
-    switch (roleKey.toLowerCase()) {
-      case 'admin':
-        return 'Administrador';
-      case 'doctor':
-        return 'Médico';
-      case 'paciente':
-        return 'Paciente';
-      default:
-        return 'Usuario';
-    }
   }
 }
