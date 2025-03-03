@@ -23,8 +23,7 @@
     }
   },
   "hosting": {
-    "public": "public",
-    "ignore": [
+"public": "build/web",    "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
