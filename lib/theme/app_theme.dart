@@ -2,29 +2,29 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   // Main colors
-  static const Color primaryColor = Color(0xFF3F51B5); // Indigo
-  static const Color secondaryColor = Color(0xFF2196F3); // Blue
-  static const Color accentColor = Color(0xFFFF4081); // Pink accent
+  static const Color primaryColor = Color(0xFF2F80ED); // Blue
+  static const Color secondaryColor = Color(0xFF27AE60); // Green
+  static const Color accentColor = Color(0xFFFFA000); // Orange
 
   // Role colors
-  static const Color adminColor = Color(0xFF3949AB); // Dark indigo
-  static const Color doctorColor = Color(0xFF00897B); // Teal
-  static const Color patientColor = Color(0xFF5E35B1); // Deep purple
+  static const Color adminColor = Color(0xFF9B51E0); // Purple
+  static const Color doctorColor = Color(0xFF2F80ED); // Blue
+  static const Color patientColor = Color(0xFF27AE60); // Green
 
   // Neutral colors
-  static const Color backgroundColor = Color(0xFFF5F7FA);
+  static Color lightBackgroundColor = Colors.grey[100]!;
   static final Color cardColor = Colors.white;
   static final Color dividerColor = Colors.grey.shade300;
 
   // Text colors
   static final Color primaryTextColor = Colors.grey.shade900;
   static final Color secondaryTextColor = Colors.grey.shade700;
-  static final Color subtleTextColor = Colors.grey.shade500;
+  static Color subtleTextColor = Colors.grey[600]!;
 
   // Status colors
   static const Color successColor = Color(0xFF66BB6A); // Green
   static const Color warningColor = Color(0xFFFFB74D); // Orange
-  static const Color errorColor = Color(0xFFEF5350); // Red
+  static const Color errorColor = Color(0xFFEB5757); // Red
 
   // Button styles
   static ButtonStyle primaryButtonStyle = ElevatedButton.styleFrom(
@@ -81,65 +81,63 @@ class AppTheme {
   );
 
   // Main app theme
-  static ThemeData lightTheme = ThemeData(
-    useMaterial3: true,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: primaryColor,
-      brightness: Brightness.light,
-    ),
-    scaffoldBackgroundColor: backgroundColor,
-    appBarTheme: AppBarTheme(
-      backgroundColor: primaryColor,
-      foregroundColor: Colors.white,
-      elevation: 0,
-      centerTitle: true,
-      iconTheme: const IconThemeData(color: Colors.white),
-      titleTextStyle: const TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
-        color: Colors.white,
+  static ThemeData get lightTheme {
+    return ThemeData(
+      primaryColor: primaryColor,
+      colorScheme: ColorScheme.light(
+        primary: primaryColor,
+        secondary: secondaryColor,
+        error: errorColor,
       ),
-    ),
-    cardTheme: CardTheme(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: cardColor,
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: primaryButtonStyle,
-    ),
-    outlinedButtonTheme: OutlinedButtonThemeData(
-      style: outlinedButtonStyle,
-    ),
-    textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(
-        foregroundColor: primaryColor,
+      scaffoldBackgroundColor: Colors.white,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: primaryColor,
+        elevation: 0,
+        centerTitle: true,
+        titleTextStyle: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
       ),
-    ),
-    inputDecorationTheme: InputDecorationTheme(
-      filled: true,
-      fillColor: Colors.grey.shade50,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: dividerColor),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primaryColor,
+          foregroundColor: Colors.white,
+          textStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        ),
       ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: primaryColor, width: 2),
+      textTheme: const TextTheme(
+        titleLarge: TextStyle(
+          // formerly headline5
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+        ),
+        titleMedium: TextStyle(
+          // formerly headline6
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+        bodyLarge: TextStyle(
+          // formerly bodyText1
+          fontSize: 16,
+        ),
+        bodyMedium: TextStyle(
+          // formerly bodyText2
+          fontSize: 14,
+        ),
       ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-    ),
-    dividerTheme: DividerThemeData(
-      color: dividerColor,
-      thickness: 1,
-      space: 32,
-    ),
-    snackBarTheme: const SnackBarThemeData(
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
+      cardTheme: CardTheme(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        elevation: 2,
       ),
-    ),
-    fontFamily: 'Roboto',
-  );
+    );
+  }
 }

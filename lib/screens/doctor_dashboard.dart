@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:citas_v2/services/auth_service.dart';
 import 'package:citas_v2/screens/doctor_profile_edit_screen.dart';
+import 'package:citas_v2/screens/doctor_appointments_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class DoctorDashboard extends StatelessWidget {
   const DoctorDashboard({super.key});
@@ -102,11 +105,16 @@ class DoctorDashboard extends StatelessWidget {
               children: [
                 _buildFeatureCard(
                   context: context,
-                  title: 'Citas del Día',
-                  icon: Icons.today,
+                  title: 'Administrar Citas',
+                  icon: Icons.calendar_month,
                   color: Colors.blue,
                   onTap: () {
-                    // Navigate to today's appointments
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const DoctorAppointmentsScreen(),
+                      ),
+                    );
                   },
                 ),
                 _buildFeatureCard(

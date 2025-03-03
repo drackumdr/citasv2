@@ -124,4 +124,99 @@ class AuthService {
       rethrow;
     }
   }
+
+  // Sign in with email and password
+  Future<UserCredential> signInWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return userCredential;
+    } on FirebaseAuthException catch (e) {
+      throw _handleFirebaseAuthException(e);
+    }
+  }
+
+  // Register with email and password
+  Future<UserCredential> registerWithEmailAndPassword(
+      String email, String password, String name) async {
+    try {
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // Update display name
+      await userCredential.user?.updateDisplayName(name);
+
+      // Create user document in Firestore
+      await _createUserInFirestore(userCredential.user!, name, 'paciente');
+
+      return userCredential;
+    } on FirebaseAuthException catch (e) {
+      throw _handleFirebaseAuthException(e);
+    }
+  }
+
+  // Create user document in Firestore
+  Future<void> _createUserInFirestore(
+      User user, String name, String role) async {
+    // Check if user already exists
+    final userDoc = await _firestore
+        .collection('usuarios')
+        .where('email', isEqualTo: user.email)
+        .limit(1)
+        .get();
+
+    // Only create a new document if user doesn't exist
+    if (userDoc.docs.isEmpty) {
+      await _firestore.collection('usuarios').add({
+        'uid': user.uid,
+        'nombre': name,
+        'email': user.email,
+        'rol': role,
+        'fechaRegistro': FieldValue.serverTimestamp(),
+        'imageUrl': user.photoURL,
+        'isSuspended': false,
+      });
+    }
+  }
+
+  // Password reset
+  Future<void> resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      throw _handleFirebaseAuthException(e);
+    }
+  }
+
+  // Handle Firebase Auth exceptions with custom messages
+  Exception _handleFirebaseAuthException(FirebaseAuthException e) {
+    switch (e.code) {
+      case 'user-not-found':
+        return Exception(
+            'No se encontró ninguna cuenta con este correo electrónico');
+      case 'wrong-password':
+        return Exception('Contraseña incorrecta');
+      case 'email-already-in-use':
+        return Exception('Ya existe una cuenta con este correo electrónico');
+      case 'weak-password':
+        return Exception('La contraseña es demasiado débil');
+      case 'invalid-email':
+        return Exception('Correo electrónico inválido');
+      case 'user-disabled':
+        return Exception('Esta cuenta ha sido deshabilitada');
+      case 'operation-not-allowed':
+        return Exception('Operación no permitida');
+      default:
+        return Exception('Error: ${e.message}');
+    }
+  }
+
+  // Check if user is authenticated
+  bool get isAuthenticated => _auth.currentUser != null;
 }
