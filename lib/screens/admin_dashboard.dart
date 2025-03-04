@@ -140,6 +140,15 @@ class AdminDashboard extends StatelessWidget {
                     // Navigate to settings
                   },
                 ),
+                _buildFeatureCard(
+                  context: context,
+                  title: 'Gestionar Disponibilidad',
+                  icon: Icons.schedule,
+                  color: Colors.teal,
+                  onTap: () {
+                    // Navigate to manage availability
+                  },
+                ),
               ],
             ),
           ],

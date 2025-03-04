@@ -109,6 +109,14 @@ class PatientDashboard extends StatelessWidget {
                     // Navigate to profile
                   },
                 ),
+                DashboardCard(
+                  title: 'Gestionar Disponibilidad',
+                  icon: Icons.schedule,
+                  color: Colors.purple,
+                  onTap: () {
+                    // Navigate to manage availability
+                  },
+                ),
               ],
             ),
 
