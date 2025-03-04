@@ -187,8 +187,68 @@ class _DoctorAppointmentsScreenState extends State<DoctorAppointmentsScreen>
   void _showCreateAppointmentDialog() {
     showDialog(
       context: context,
-      builder: (context) => CreateAppointmentDialog(),
+      builder: (context) => CreateAppointmentDialog(
+        onDateSelected: _generateAvailableTimeSlots,
+      ),
     );
+  }
+
+  Future<List<TimeOfDay>> _generateAvailableTimeSlots(DateTime selectedDate) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return [];
+
+    final doctorQuerySnapshot = await FirebaseFirestore.instance
+        .collection('usuarios')
+        .where('email', isEqualTo: user.email)
+        .limit(1)
+        .get();
+
+    if (doctorQuerySnapshot.docs.isEmpty) return [];
+
+    final doctorDoc = doctorQuerySnapshot.docs.first;
+    final doctorData = doctorDoc.data();
+    final availability = doctorData['horario'] as Map<String, dynamic>?;
+    final appointmentDuration = doctorData['appointmentDuration'] as int?;
+
+    if (availability == null || appointmentDuration == null) return [];
+
+    final dayOfWeek =
+        DateFormat('EEEE', 'es').format(selectedDate).toLowerCase();
+    final timeRanges = availability[dayOfWeek] as List<dynamic>?;
+
+    if (timeRanges == null || timeRanges.isEmpty) return [];
+
+    final List<TimeOfDay> availableSlots = [];
+
+    for (var range in timeRanges) {
+      final startHour = range['startHour'] as int;
+      final startMinute = range['startMinute'] as int;
+      final endHour = range['endHour'] as int;
+      final endMinute = range['endMinute'] as int;
+
+      DateTime startTime = DateTime(
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+        startHour,
+        startMinute,
+      );
+
+      DateTime endTime = DateTime(
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+        endHour,
+        endMinute,
+      );
+
+      while (startTime.isBefore(endTime)) {
+        availableSlots.add(TimeOfDay.fromDateTime(startTime));
+        startTime = startTime.add(Duration(minutes: appointmentDuration));
+      }
+    }
+
+    return availableSlots;
   }
 }
 
@@ -369,7 +429,9 @@ class AppointmentCard extends StatelessWidget {
 }
 
 class CreateAppointmentDialog extends StatefulWidget {
-  const CreateAppointmentDialog({super.key});
+  final Future<List<TimeOfDay>> Function(DateTime) onDateSelected;
+
+  const CreateAppointmentDialog({super.key, required this.onDateSelected});
 
   @override
   State<CreateAppointmentDialog> createState() =>
@@ -402,8 +464,8 @@ class _CreateAppointmentDialogState extends State<CreateAppointmentDialog> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        _generateAvailableTimeSlots();
       });
+      _availableTimeSlots = await widget.onDateSelected(picked);
     }
   }
 
@@ -417,68 +479,6 @@ class _CreateAppointmentDialogState extends State<CreateAppointmentDialog> {
         _selectedTime = picked;
       });
     }
-  }
-
-  Future<void> _generateAvailableTimeSlots() async {
-    if (_selectedDate == null) return;
-
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
-
-    final doctorQuerySnapshot = await FirebaseFirestore.instance
-        .collection('usuarios')
-        .where('email', isEqualTo: user.email)
-        .limit(1)
-        .get();
-
-    if (doctorQuerySnapshot.docs.isEmpty) return;
-
-    final doctorDoc = doctorQuerySnapshot.docs.first;
-    final doctorData = doctorDoc.data();
-    final availability = doctorData['horario'] as Map<String, dynamic>?;
-    final appointmentDuration = doctorData['appointmentDuration'] as int?;
-
-    if (availability == null || appointmentDuration == null) return;
-
-    final dayOfWeek =
-        DateFormat('EEEE', 'es').format(_selectedDate!).toLowerCase();
-    final timeRanges = availability[dayOfWeek] as List<dynamic>?;
-
-    if (timeRanges == null || timeRanges.isEmpty) return;
-
-    final List<TimeOfDay> availableSlots = [];
-
-    for (var range in timeRanges) {
-      final startHour = range['startHour'] as int;
-      final startMinute = range['startMinute'] as int;
-      final endHour = range['endHour'] as int;
-      final endMinute = range['endMinute'] as int;
-
-      DateTime startTime = DateTime(
-        _selectedDate!.year,
-        _selectedDate!.month,
-        _selectedDate!.day,
-        startHour,
-        startMinute,
-      );
-
-      DateTime endTime = DateTime(
-        _selectedDate!.year,
-        _selectedDate!.month,
-        _selectedDate!.day,
-        endHour,
-        endMinute,
-      );
-
-      while (startTime.isBefore(endTime)) {
-        availableSlots.add(TimeOfDay.fromDateTime(startTime));
-        startTime = startTime.add(Duration(minutes: appointmentDuration));
-      }
-    }
-
-    setState(() {
-      _availableTimeSlots = availableSlots;
-    });
   }
 
   Future<void> _createAppointment() async {

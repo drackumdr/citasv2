@@ -138,6 +138,20 @@ class DoctorDashboard extends StatelessWidget {
                     );
                   },
                 ),
+                _buildFeatureCard(
+                  context: context,
+                  title: 'Gestionar Disponibilidad',
+                  icon: Icons.schedule,
+                  color: Colors.purple,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const DoctorProfileEditScreen()),
+                    );
+                  },
+                ),
               ],
             ),
           ],
