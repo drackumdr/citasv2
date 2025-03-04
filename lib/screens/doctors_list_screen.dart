@@ -256,13 +256,21 @@ class DoctorCard extends StatelessWidget {
           padding: const EdgeInsets.all(12.0),
           child: Row(
             children: [
-              // Doctor image
+              // Doctor image with improved error handling
               CircleAvatar(
                 radius: 35,
-                backgroundImage: imageUrl != null
+                backgroundColor: Colors.grey[200],
+                backgroundImage: imageUrl != null && imageUrl!.isNotEmpty
                     ? NetworkImage(imageUrl!)
-                    : const AssetImage('images/doctor_default.jpg')
-                        as ImageProvider,
+                    : null,
+                onBackgroundImageError: imageUrl != null && imageUrl!.isNotEmpty
+                    ? (exception, stackTrace) {
+                        print('Error loading doctor image in list: $exception');
+                      }
+                    : null,
+                child: imageUrl == null || imageUrl!.isEmpty
+                    ? Icon(Icons.person, color: AppTheme.doctorColor)
+                    : null,
               ),
               const SizedBox(width: 16),
 

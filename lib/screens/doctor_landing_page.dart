@@ -185,10 +185,29 @@ class _DoctorLandingPageState extends State<DoctorLandingPage> {
                 ? Image.network(
                     _doctorData!['imageUrl'],
                     fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(child: CircularProgressIndicator());
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      print('Error loading doctor image: $error');
+                      return Image.asset(
+                        'images/doctor_default.jpg',
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: Colors.grey,
+                            child: const Icon(Icons.person,
+                                size: 64, color: Colors.white),
+                          );
+                        },
+                      );
+                    },
                   )
-                : Image.asset(
-                    'images/doctor_default.jpg',
-                    fit: BoxFit.cover,
+                : Container(
+                    color: Colors.grey,
+                    child:
+                        const Icon(Icons.person, size: 64, color: Colors.white),
                   ),
             // Gradient for better text visibility
             Container(
@@ -414,6 +433,26 @@ class _DoctorLandingPageState extends State<DoctorLandingPage> {
                       width: 160,
                       height: 120,
                       fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          width: 160,
+                          height: 120,
+                          color: Colors.grey[200],
+                          child:
+                              const Center(child: CircularProgressIndicator()),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        print('Error loading gallery image: $error');
+                        return Container(
+                          width: 160,
+                          height: 120,
+                          color: Colors.grey[300],
+                          child: const Icon(Icons.broken_image,
+                              color: Colors.white),
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -446,7 +485,34 @@ class FullScreenImage extends StatelessWidget {
           boundaryMargin: const EdgeInsets.all(20),
           minScale: 0.5,
           maxScale: 4,
-          child: Image.network(imageUrl),
+          child: Image.network(
+            imageUrl,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return Center(
+                child: CircularProgressIndicator(
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                          loadingProgress.expectedTotalBytes!
+                      : null,
+                ),
+              );
+            },
+            errorBuilder: (context, error, stackTrace) {
+              print('Error loading fullscreen image: $error');
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.broken_image, size: 64, color: Colors.white),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No se pudo cargar la imagen',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

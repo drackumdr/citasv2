@@ -7,6 +7,7 @@ import 'package:citas_v2/widgets/user_profile_header.dart';
 import 'package:citas_v2/screens/doctors_list_screen.dart';
 import 'package:citas_v2/screens/patient_appointments_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:citas_v2/utils/profile_image_utils.dart';
 
 class PatientDashboard extends StatelessWidget {
   final User user;
@@ -16,6 +17,8 @@ class PatientDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AuthService authService = AuthService();
+    ProfileImageUtils.devicePixelRatio =
+        MediaQuery.of(context).devicePixelRatio;
 
     return Scaffold(
       appBar: AppBar(
