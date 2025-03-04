@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen>
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              AppTheme.primaryColor.withOpacity(0.8),
+              AppTheme.primaryColor.withAlpha((0.8 * 255).toInt()),
               AppTheme.secondaryColor,
             ],
           ),
@@ -74,7 +74,8 @@ class _LoginScreenState extends State<LoginScreen>
                         child: Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: AppTheme.primaryColor.withOpacity(0.1),
+                            color: AppTheme.primaryColor
+                                .withAlpha((0.1 * 255).toInt()),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
@@ -106,10 +107,12 @@ class _LoginScreenState extends State<LoginScreen>
                           margin: const EdgeInsets.only(bottom: 20),
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: AppTheme.errorColor.withOpacity(0.1),
+                            color: AppTheme.errorColor
+                                .withAlpha((0.1 * 255).toInt()),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: AppTheme.errorColor.withOpacity(0.3),
+                              color: AppTheme.errorColor
+                                  .withAlpha((0.3 * 255).toInt()),
                             ),
                           ),
                           child: Row(

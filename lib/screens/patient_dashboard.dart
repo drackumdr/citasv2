@@ -182,7 +182,8 @@ class PatientDashboard extends StatelessWidget {
                   margin: const EdgeInsets.only(bottom: 12),
                   child: ListTile(
                     leading: CircleAvatar(
-                      backgroundColor: AppTheme.doctorColor.withOpacity(0.2),
+                      backgroundColor:
+                          AppTheme.doctorColor.withAlpha((0.2 * 255).toInt()),
                       child: Icon(Icons.medical_services,
                           color: AppTheme.doctorColor),
                     ),

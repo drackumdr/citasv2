@@ -19,7 +19,7 @@ class _DoctorLandingPageState extends State<DoctorLandingPage> {
   bool _isLoading = true;
   Map<String, dynamic>? _doctorData;
   String _selectedDay = 'lunes'; // Default selected day
-  List<String> _daysOfWeek = [
+  final List<String> _daysOfWeek = [
     'lunes',
     'martes',
     'miércoles',
@@ -198,7 +198,7 @@ class _DoctorLandingPageState extends State<DoctorLandingPage> {
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    Colors.black.withOpacity(0.7),
+                    Colors.black.withAlpha((0.7 * 255).toInt()),
                   ],
                 ),
               ),
@@ -481,7 +481,7 @@ class _AppointmentBookingWidgetState extends State<AppointmentBookingWidget> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   bool _isBooking = false;
 
-  List<String> _spanishDays = [
+  final List<String> _spanishDays = [
     'lunes',
     'martes',
     'miércoles',
@@ -491,7 +491,7 @@ class _AppointmentBookingWidgetState extends State<AppointmentBookingWidget> {
     'domingo'
   ];
 
-  List<String> _englishDays = [
+  final List<String> _englishDays = [
     'Monday',
     'Tuesday',
     'Wednesday',

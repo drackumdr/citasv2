@@ -261,7 +261,7 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen>
           children: [
             Container(
               decoration: BoxDecoration(
-                color: statusColor.withOpacity(0.2),
+                color: statusColor.withAlpha((0.2 * 255).toInt()),
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(12),
@@ -299,7 +299,8 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CircleAvatar(
-                        backgroundColor: AppTheme.doctorColor.withOpacity(0.2),
+                        backgroundColor:
+                            AppTheme.doctorColor.withAlpha((0.2 * 255).toInt()),
                         child: Icon(
                           Icons.medical_services,
                           color: AppTheme.doctorColor,
@@ -334,7 +335,7 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen>
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.1),
+                          color: Colors.blue.withAlpha((0.1 * 255).toInt()),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(

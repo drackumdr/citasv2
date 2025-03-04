@@ -249,7 +249,8 @@ class AppointmentCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CircleAvatar(
-                    backgroundColor: AppTheme.primaryColor.withOpacity(0.2),
+                    backgroundColor:
+                        AppTheme.primaryColor.withAlpha((0.1 * 255).toInt()),
                     child: Icon(
                       Icons.person,
                       color: AppTheme.primaryColor,
@@ -439,7 +440,8 @@ class _CreateAppointmentDialogState extends State<CreateAppointmentDialog> {
 
     if (availability == null || appointmentDuration == null) return;
 
-    final dayOfWeek = DateFormat('EEEE', 'es').format(_selectedDate!).toLowerCase();
+    final dayOfWeek =
+        DateFormat('EEEE', 'es').format(_selectedDate!).toLowerCase();
     final timeRanges = availability[dayOfWeek] as List<dynamic>?;
 
     if (timeRanges == null || timeRanges.isEmpty) return;
