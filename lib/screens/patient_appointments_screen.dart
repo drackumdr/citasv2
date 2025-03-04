@@ -17,7 +17,6 @@ class PatientAppointmentsScreen extends StatefulWidget {
 class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final DateFormat _dateFormat = DateFormat('dd/MM/yyyy HH:mm');
 
   @override
   void initState() {

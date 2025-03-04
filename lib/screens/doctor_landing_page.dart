@@ -187,7 +187,7 @@ class _DoctorLandingPageState extends State<DoctorLandingPage> {
                     fit: BoxFit.cover,
                   )
                 : Image.asset(
-                    'assets/images/doctor_default.jpg',
+                    'images/doctor_default.jpg',
                     fit: BoxFit.cover,
                   ),
             // Gradient for better text visibility
@@ -783,7 +783,8 @@ class _AppointmentBookingWidgetState extends State<AppointmentBookingWidget> {
                                 selectedColor: AppTheme.primaryColor,
                                 backgroundColor: Colors.grey[200],
                                 labelStyle: TextStyle(
-                                  color: isSelected ? Colors.white : Colors.black,
+                                  color:
+                                      isSelected ? Colors.white : Colors.black,
                                 ),
                                 onSelected: (selected) {
                                   setState(() {
