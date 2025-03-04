@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:citas_v2/firebase_options.dart';
 import 'package:citas_v2/widgets/role_based_redirect.dart';
 import 'package:citas_v2/theme/app_theme.dart';
+import 'package:intl/date_symbol_data_local.dart'; // Add this import
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +16,10 @@ void main() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     log('Firebase inicializado correctamente');
+
+    // Initialize date formatting for Spanish locale
+    await initializeDateFormatting('es', null);
+
     runApp(const MyApp());
   } catch (e) {
     log('Error al inicializar Firebase: $e');

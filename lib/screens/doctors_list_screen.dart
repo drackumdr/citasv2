@@ -126,7 +126,7 @@ class _DoctorsListScreenState extends State<DoctorsListScreen> {
                             value: specialty,
                             child: Text(specialty),
                           );
-                        }).toList(),
+                        }),
                       ],
                     ),
                   ),

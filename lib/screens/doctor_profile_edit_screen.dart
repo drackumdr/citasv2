@@ -5,7 +5,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/foundation.dart' show Uint8List, kIsWeb;
 import 'package:intl/intl.dart';
-import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 
 class DoctorProfileEditScreen extends StatefulWidget {
@@ -476,6 +475,8 @@ class TimeRange {
 }
 
 class TimeRangePickerDialog extends StatefulWidget {
+  const TimeRangePickerDialog({super.key});
+
   @override
   _TimeRangePickerDialogState createState() => _TimeRangePickerDialogState();
 }

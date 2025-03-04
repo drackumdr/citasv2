@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:citas_v2/theme/app_theme.dart';
+import 'package:intl/date_symbol_data_local.dart'; // Add this import
 
 class AppointmentDetailScreen extends StatefulWidget {
   final String appointmentId;
@@ -20,6 +21,13 @@ class AppointmentDetailScreen extends StatefulWidget {
 
 class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize date formatting for Spanish locale
+    initializeDateFormatting('es');
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:citas_v2/theme/app_theme.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/date_symbol_data_local.dart'; // Add this import
 
 class DoctorLandingPage extends StatefulWidget {
   final String doctorId;
@@ -31,6 +32,8 @@ class _DoctorLandingPageState extends State<DoctorLandingPage> {
   @override
   void initState() {
     super.initState();
+    // Initialize date formatting for Spanish locale
+    initializeDateFormatting('es');
     _loadDoctorData();
   }
 

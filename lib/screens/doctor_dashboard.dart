@@ -3,8 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:citas_v2/services/auth_service.dart';
 import 'package:citas_v2/screens/doctor_profile_edit_screen.dart';
 import 'package:citas_v2/screens/doctor_appointments_screen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
 
 class DoctorDashboard extends StatelessWidget {
   const DoctorDashboard({super.key});

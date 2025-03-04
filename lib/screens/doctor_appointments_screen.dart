@@ -16,8 +16,6 @@ class DoctorAppointmentsScreen extends StatefulWidget {
 class _DoctorAppointmentsScreenState extends State<DoctorAppointmentsScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  String _selectedFilter = 'upcoming';
-  final DateFormat _dateFormat = DateFormat('dd/MM/yyyy HH:mm');
 
   @override
   void initState() {
@@ -57,8 +55,8 @@ class _DoctorAppointmentsScreenState extends State<DoctorAppointmentsScreen>
         onPressed: () {
           _showCreateAppointmentDialog();
         },
-        child: const Icon(Icons.add),
         backgroundColor: AppTheme.primaryColor,
+        child: const Icon(Icons.add),
       ),
     );
   }
