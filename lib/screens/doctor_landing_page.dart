@@ -108,41 +108,6 @@ class _DoctorLandingPageState extends State<DoctorLandingPage> {
     );
   }
 
-  List<Map<String, dynamic>> _generateAppointmentBlocks(
-      Map<String, dynamic> timeRange, int duration) {
-    List<Map<String, dynamic>> blocks = [];
-    DateTime startTime = DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-      timeRange['startHour'],
-      timeRange['startMinute'],
-    );
-    DateTime endTime = DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-      timeRange['endHour'],
-      timeRange['endMinute'],
-    );
-
-    while (startTime.isBefore(endTime)) {
-      DateTime blockEndTime = startTime.add(Duration(minutes: duration));
-      if (blockEndTime.isAfter(endTime)) break;
-
-      blocks.add({
-        'startHour': startTime.hour,
-        'startMinute': startTime.minute,
-        'endHour': blockEndTime.hour,
-        'endMinute': blockEndTime.minute,
-      });
-
-      startTime = blockEndTime;
-    }
-
-    return blocks;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

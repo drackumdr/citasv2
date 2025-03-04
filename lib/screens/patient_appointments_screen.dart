@@ -128,7 +128,6 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen>
             }
 
             if (snapshot.hasError) {
-              print('Error: ${snapshot.error}');
               return Center(
                 child: Text('Error: ${snapshot.error}'),
               );
