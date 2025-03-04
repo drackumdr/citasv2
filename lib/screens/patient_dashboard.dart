@@ -45,6 +45,15 @@ class PatientDashboard extends StatelessWidget {
               photoUrl: user.photoURL,
             ),
             const SizedBox(height: 24),
+            // Upcoming appointments section
+            const Text(
+              'Próximas Citas',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+
+            // Show upcoming appointments from Firestore
+            _buildUpcomingAppointments(context),
 
             // Patient dashboard content
             const Text(
@@ -121,16 +130,6 @@ class PatientDashboard extends StatelessWidget {
             ),
 
             const SizedBox(height: 24),
-
-            // Upcoming appointments section
-            const Text(
-              'Próximas Citas',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-
-            // Show upcoming appointments from Firestore
-            _buildUpcomingAppointments(context),
           ],
         ),
       ),
