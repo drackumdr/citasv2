@@ -54,6 +54,21 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
           }
 
           final appointment = snapshot.data!.data() as Map<String, dynamic>;
+
+          // Check if the selected time slot is already booked
+          if (appointment['estado'] == 'conflict') {
+            return Center(
+              child: Text(
+                'El horario seleccionado ya está reservado. Por favor, elija otro horario.',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.red,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            );
+          }
+
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
