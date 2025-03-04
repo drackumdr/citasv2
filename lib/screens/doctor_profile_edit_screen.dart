@@ -178,9 +178,27 @@ class _DoctorProfileEditScreenState extends State<DoctorProfileEditScreen> {
         final firebase_storage.Reference storageRef =
             firebase_storage.FirebaseStorage.instance.ref().child(filePathName);
 
-        // Upload the image
+        // Determine MIME type based on file extension
+        String? extension = fileName.split('.').last.toLowerCase();
+        String contentType = 'image/jpeg'; // Default value
+
+        switch (extension) {
+          case 'png':
+            contentType = 'image/png';
+            break;
+          case 'gif':
+            contentType = 'image/gif';
+            break;
+          case 'bmp':
+            contentType = 'image/bmp';
+            break;
+          case 'webp':
+            contentType = 'image/webp';
+            break;
+        }
+
         final metadata = firebase_storage.SettableMetadata(
-          contentType: 'image/jpeg',
+          contentType: contentType,
           customMetadata: {'picked-file-path': fileName},
         );
 
@@ -243,9 +261,27 @@ class _DoctorProfileEditScreenState extends State<DoctorProfileEditScreen> {
         final firebase_storage.Reference storageRef =
             firebase_storage.FirebaseStorage.instance.ref().child(filePathName);
 
-        // Upload the image
+        // Determine MIME type based on file extension
+        String? extension = fileName.split('.').last.toLowerCase();
+        String contentType = 'image/jpeg'; // Default value
+
+        switch (extension) {
+          case 'png':
+            contentType = 'image/png';
+            break;
+          case 'gif':
+            contentType = 'image/gif';
+            break;
+          case 'bmp':
+            contentType = 'image/bmp';
+            break;
+          case 'webp':
+            contentType = 'image/webp';
+            break;
+        }
+
         final metadata = firebase_storage.SettableMetadata(
-          contentType: 'image/jpeg',
+          contentType: contentType,
           customMetadata: {'picked-file-path': fileName},
         );
 
