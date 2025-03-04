@@ -258,7 +258,7 @@ class DoctorCard extends StatelessWidget {
                 radius: 35,
                 backgroundImage: imageUrl != null
                     ? NetworkImage(imageUrl!)
-                    : const AssetImage('assets/images/doctor_default.jpg')
+                    : const AssetImage('images/doctor_default.jpg')
                         as ImageProvider,
               ),
               const SizedBox(width: 16),
