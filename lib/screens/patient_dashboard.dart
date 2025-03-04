@@ -172,6 +172,7 @@ class PatientDashboard extends StatelessWidget {
             }
 
             if (snapshot.hasError) {
+              print(snapshot.error);
               return Center(child: Text('Error: ${snapshot.error}'));
             }
 
