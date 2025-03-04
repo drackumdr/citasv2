@@ -20,7 +20,8 @@ class _DoctorProfileEditScreenState extends State<DoctorProfileEditScreen> {
   final TextEditingController _especialidadController = TextEditingController();
   final TextEditingController _telefonoController = TextEditingController();
   final TextEditingController _direccionController = TextEditingController();
-  final TextEditingController _appointmentDurationController = TextEditingController();
+  final TextEditingController _appointmentDurationController =
+      TextEditingController();
 
   Map<String, List<TimeRange>> availability = {
     'lunes': [],
@@ -58,7 +59,8 @@ class _DoctorProfileEditScreenState extends State<DoctorProfileEditScreen> {
       _especialidadController.text = docData['especialidad'] ?? '';
       _telefonoController.text = docData['telefono'] ?? '';
       _direccionController.text = docData['direccion'] ?? '';
-      _appointmentDurationController.text = docData['appointmentDuration']?.toString() ?? '';
+      _appointmentDurationController.text =
+          docData['appointmentDuration']?.toString() ?? '';
       _imageUrl = docData['imageUrl'];
       _galleryImages = List<String>.from(docData['galleryImages'] ?? []);
 
@@ -124,7 +126,8 @@ class _DoctorProfileEditScreenState extends State<DoctorProfileEditScreen> {
         'horario': horarioParaGuardar,
         'imageUrl': _imageUrl,
         'galleryImages': _galleryImages,
-        'appointmentDuration': int.tryParse(_appointmentDurationController.text) ?? 0,
+        'appointmentDuration':
+            int.tryParse(_appointmentDurationController.text) ?? 0,
       };
 
       await FirebaseFirestore.instance
@@ -320,7 +323,7 @@ class _DoctorProfileEditScreenState extends State<DoctorProfileEditScreen> {
                         radius: 60,
                         backgroundImage: _imageUrl != null
                             ? NetworkImage(_imageUrl!)
-                            : const AssetImage('assets/images/no_image.jpg')
+                            : const AssetImage('images/no_image.jpg')
                                 as ImageProvider,
                         child: _imageUrl == null
                             ? const Icon(Icons.camera_alt, size: 40)

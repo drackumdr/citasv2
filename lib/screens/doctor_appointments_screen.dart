@@ -121,6 +121,7 @@ class _DoctorAppointmentsScreenState extends State<DoctorAppointmentsScreen>
             }
 
             if (snapshot.hasError) {
+              print('Error: ${snapshot.error}');
               return Center(
                 child: Text('Error: ${snapshot.error}'),
               );
@@ -193,7 +194,8 @@ class _DoctorAppointmentsScreenState extends State<DoctorAppointmentsScreen>
     );
   }
 
-  Future<List<TimeOfDay>> _generateAvailableTimeSlots(DateTime selectedDate) async {
+  Future<List<TimeOfDay>> _generateAvailableTimeSlots(
+      DateTime selectedDate) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return [];
 
