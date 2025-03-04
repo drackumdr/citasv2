@@ -15,6 +15,7 @@ class _DoctorManagementScreenState extends State<DoctorManagementScreen> {
   final TextEditingController _especialidadController = TextEditingController();
   final TextEditingController _telefonoController = TextEditingController();
   final TextEditingController _direccionController = TextEditingController();
+  final TextEditingController _appointmentDurationController = TextEditingController();
 
   String _editingDoctorId = '';
   bool _isEditing = false;
@@ -28,6 +29,7 @@ class _DoctorManagementScreenState extends State<DoctorManagementScreen> {
     _especialidadController.dispose();
     _telefonoController.dispose();
     _direccionController.dispose();
+    _appointmentDurationController.dispose();
     super.dispose();
   }
 
@@ -37,6 +39,7 @@ class _DoctorManagementScreenState extends State<DoctorManagementScreen> {
     _especialidadController.clear();
     _telefonoController.clear();
     _direccionController.clear();
+    _appointmentDurationController.clear();
     setState(() {
       _isEditing = false;
       _editingDoctorId = '';
@@ -56,6 +59,7 @@ class _DoctorManagementScreenState extends State<DoctorManagementScreen> {
       'direccion': _direccionController.text.trim(),
       'rol': _selectedRole,
       'isSuspended': _isSuspended,
+      'appointmentDuration': int.tryParse(_appointmentDurationController.text) ?? 0,
     };
 
     try {
@@ -103,6 +107,7 @@ class _DoctorManagementScreenState extends State<DoctorManagementScreen> {
     _direccionController.text = doctorData['direccion'] ?? '';
     _selectedRole = doctorData['rol'] ?? 'doctor';
     _isSuspended = doctorData['isSuspended'] ?? false;
+    _appointmentDurationController.text = doctorData['appointmentDuration']?.toString() ?? '';
 
     setState(() {
       _isEditing = true;
@@ -217,6 +222,24 @@ class _DoctorManagementScreenState extends State<DoctorManagementScreen> {
                           labelText: "Dirección",
                           border: OutlineInputBorder(),
                         ),
+                      ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: _appointmentDurationController,
+                        decoration: const InputDecoration(
+                          labelText: "Duración estándar de la cita (minutos)",
+                          border: OutlineInputBorder(),
+                        ),
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Por favor ingrese la duración de la cita';
+                          }
+                          if (int.tryParse(value) == null) {
+                            return 'Por favor ingrese un número válido';
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(height: 12),
                       DropdownButtonFormField<String>(

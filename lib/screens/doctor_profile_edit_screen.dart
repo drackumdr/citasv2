@@ -20,6 +20,7 @@ class _DoctorProfileEditScreenState extends State<DoctorProfileEditScreen> {
   final TextEditingController _especialidadController = TextEditingController();
   final TextEditingController _telefonoController = TextEditingController();
   final TextEditingController _direccionController = TextEditingController();
+  final TextEditingController _appointmentDurationController = TextEditingController();
 
   Map<String, List<TimeRange>> availability = {
     'lunes': [],
@@ -57,6 +58,7 @@ class _DoctorProfileEditScreenState extends State<DoctorProfileEditScreen> {
       _especialidadController.text = docData['especialidad'] ?? '';
       _telefonoController.text = docData['telefono'] ?? '';
       _direccionController.text = docData['direccion'] ?? '';
+      _appointmentDurationController.text = docData['appointmentDuration']?.toString() ?? '';
       _imageUrl = docData['imageUrl'];
       _galleryImages = List<String>.from(docData['galleryImages'] ?? []);
 
@@ -122,6 +124,7 @@ class _DoctorProfileEditScreenState extends State<DoctorProfileEditScreen> {
         'horario': horarioParaGuardar,
         'imageUrl': _imageUrl,
         'galleryImages': _galleryImages,
+        'appointmentDuration': int.tryParse(_appointmentDurationController.text) ?? 0,
       };
 
       await FirebaseFirestore.instance
@@ -359,6 +362,26 @@ class _DoctorProfileEditScreenState extends State<DoctorProfileEditScreen> {
                         labelText: "Dirección",
                         border: OutlineInputBorder(),
                       ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Appointment Duration
+                    TextFormField(
+                      controller: _appointmentDurationController,
+                      decoration: const InputDecoration(
+                        labelText: "Duración estándar de la cita (minutos)",
+                        border: OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Por favor ingrese la duración de la cita';
+                        }
+                        if (int.tryParse(value) == null) {
+                          return 'Por favor ingrese un número válido';
+                        }
+                        return null;
+                      },
                     ),
                     const SizedBox(height: 20),
 

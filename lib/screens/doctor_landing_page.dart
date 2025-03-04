@@ -102,6 +102,7 @@ class _DoctorLandingPageState extends State<DoctorLandingPage> {
           doctorId: widget.doctorId,
           doctorName: _doctorData?['nombre'] ?? 'Médico',
           horario: _doctorData?['horario'] ?? {},
+          appointmentDuration: _doctorData?['appointmentDuration'] ?? 30,
         );
       },
     );
@@ -457,12 +458,14 @@ class AppointmentBookingWidget extends StatefulWidget {
   final String doctorId;
   final String doctorName;
   final Map<String, dynamic> horario;
+  final int appointmentDuration;
 
   const AppointmentBookingWidget({
     super.key,
     required this.doctorId,
     required this.doctorName,
     required this.horario,
+    required this.appointmentDuration,
   });
 
   @override
@@ -551,6 +554,41 @@ class _AppointmentBookingWidgetState extends State<AppointmentBookingWidget> {
     final endDt = DateTime(now.year, now.month, now.day, timeRange['endHour'],
         timeRange['endMinute']);
     return '${format.format(startDt)} - ${format.format(endDt)}';
+  }
+
+  List<Map<String, dynamic>> _generateAppointmentBlocks(
+      Map<String, dynamic> timeRange, int duration) {
+    List<Map<String, dynamic>> blocks = [];
+    DateTime startTime = DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+      timeRange['startHour'],
+      timeRange['startMinute'],
+    );
+    DateTime endTime = DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+      timeRange['endHour'],
+      timeRange['endMinute'],
+    );
+
+    while (startTime.isBefore(endTime)) {
+      DateTime blockEndTime = startTime.add(Duration(minutes: duration));
+      if (blockEndTime.isAfter(endTime)) break;
+
+      blocks.add({
+        'startHour': startTime.hour,
+        'startMinute': startTime.minute,
+        'endHour': blockEndTime.hour,
+        'endMinute': blockEndTime.minute,
+      });
+
+      startTime = blockEndTime;
+    }
+
+    return blocks;
   }
 
   Future<void> _bookAppointment() async {
@@ -730,26 +768,31 @@ class _AppointmentBookingWidgetState extends State<AppointmentBookingWidget> {
                       scrollDirection: Axis.horizontal,
                       itemCount: (widget.horario[_selectedDay] as List).length,
                       itemBuilder: (context, index) {
-                        final timeSlot =
+                        final timeRange =
                             (widget.horario[_selectedDay] as List)[index];
-                        final isSelected = _selectedTimeSlot == timeSlot;
-
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: ChoiceChip(
-                            label: Text(_formatTimeRange(timeSlot)),
-                            selected: isSelected,
-                            selectedColor: AppTheme.primaryColor,
-                            backgroundColor: Colors.grey[200],
-                            labelStyle: TextStyle(
-                              color: isSelected ? Colors.white : Colors.black,
-                            ),
-                            onSelected: (selected) {
-                              setState(() {
-                                _selectedTimeSlot = selected ? timeSlot : null;
-                              });
-                            },
-                          ),
+                        final blocks = _generateAppointmentBlocks(
+                            timeRange, widget.appointmentDuration);
+                        return Row(
+                          children: blocks.map((block) {
+                            final isSelected = _selectedTimeSlot == block;
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: ChoiceChip(
+                                label: Text(_formatTimeRange(block)),
+                                selected: isSelected,
+                                selectedColor: AppTheme.primaryColor,
+                                backgroundColor: Colors.grey[200],
+                                labelStyle: TextStyle(
+                                  color: isSelected ? Colors.white : Colors.black,
+                                ),
+                                onSelected: (selected) {
+                                  setState(() {
+                                    _selectedTimeSlot = selected ? block : null;
+                                  });
+                                },
+                              ),
+                            );
+                          }).toList(),
                         );
                       },
                     ),
