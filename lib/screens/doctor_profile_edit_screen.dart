@@ -178,27 +178,9 @@ class _DoctorProfileEditScreenState extends State<DoctorProfileEditScreen> {
         final firebase_storage.Reference storageRef =
             firebase_storage.FirebaseStorage.instance.ref().child(filePathName);
 
-        // Determine MIME type based on file extension
-        String? extension = fileName.split('.').last.toLowerCase();
-        String contentType = 'image/jpeg'; // Default value
-
-        switch (extension) {
-          case 'png':
-            contentType = 'image/png';
-            break;
-          case 'gif':
-            contentType = 'image/gif';
-            break;
-          case 'bmp':
-            contentType = 'image/bmp';
-            break;
-          case 'webp':
-            contentType = 'image/webp';
-            break;
-        }
-
+        // Upload the image
         final metadata = firebase_storage.SettableMetadata(
-          contentType: contentType,
+          contentType: 'image/jpeg',
           customMetadata: {'picked-file-path': fileName},
         );
 
@@ -261,27 +243,9 @@ class _DoctorProfileEditScreenState extends State<DoctorProfileEditScreen> {
         final firebase_storage.Reference storageRef =
             firebase_storage.FirebaseStorage.instance.ref().child(filePathName);
 
-        // Determine MIME type based on file extension
-        String? extension = fileName.split('.').last.toLowerCase();
-        String contentType = 'image/jpeg'; // Default value
-
-        switch (extension) {
-          case 'png':
-            contentType = 'image/png';
-            break;
-          case 'gif':
-            contentType = 'image/gif';
-            break;
-          case 'bmp':
-            contentType = 'image/bmp';
-            break;
-          case 'webp':
-            contentType = 'image/webp';
-            break;
-        }
-
+        // Upload the image
         final metadata = firebase_storage.SettableMetadata(
-          contentType: contentType,
+          contentType: 'image/jpeg',
           customMetadata: {'picked-file-path': fileName},
         );
 
@@ -352,42 +316,18 @@ class _DoctorProfileEditScreenState extends State<DoctorProfileEditScreen> {
                 key: _formKey,
                 child: ListView(
                   children: [
-                    // Profile Picture with improved error handling
+                    // Profile Picture
                     GestureDetector(
                       onTap: _uploadImage,
-                      child: Stack(
-                        alignment: Alignment.bottomRight,
-                        children: [
-                          CircleAvatar(
-                            radius: 60,
-                            backgroundColor: Colors.grey[200],
-                            backgroundImage: _imageUrl != null
-                                ? NetworkImage(_imageUrl!)
-                                : null,
-                            onBackgroundImageError: _imageUrl != null
-                                ? (exception, stackTrace) {
-                                    print(
-                                        'Error loading profile image: $exception');
-                                  }
-                                : null,
-                            child: _imageUrl == null
-                                ? const Icon(Icons.camera_alt,
-                                    size: 40, color: Colors.grey)
-                                : null,
-                          ),
-                          Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.edit,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ),
-                        ],
+                      child: CircleAvatar(
+                        radius: 60,
+                        backgroundImage: _imageUrl != null
+                            ? NetworkImage(_imageUrl!)
+                            : const AssetImage('images/no_image.jpg')
+                                as ImageProvider,
+                        child: _imageUrl == null
+                            ? const Icon(Icons.camera_alt, size: 40)
+                            : null,
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -494,7 +434,7 @@ class _DoctorProfileEditScreenState extends State<DoctorProfileEditScreen> {
                         ),
                       ),
 
-                    // Gallery section with improved error handling
+                    // Gallery
                     const SizedBox(height: 20),
                     const Text(
                       'Galería de Imágenes',
@@ -504,81 +444,46 @@ class _DoctorProfileEditScreenState extends State<DoctorProfileEditScreen> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    ElevatedButton.icon(
+                    ElevatedButton(
                       onPressed: _uploadGalleryImage,
-                      icon: const Icon(Icons.add_photo_alternate),
-                      label: const Text('Subir Imagen a la Galería'),
+                      child: const Text('Subir Imagen a la Galería'),
                     ),
                     const SizedBox(height: 10),
                     SizedBox(
                       height: 100,
-                      child: _galleryImages.isEmpty
-                          ? Center(
-                              child: Text(
-                                'No hay imágenes en la galería',
-                                style: TextStyle(color: Colors.grey[600]),
-                              ),
-                            )
-                          : ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: _galleryImages.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
-                                  child: Stack(
-                                    alignment: Alignment.topRight,
-                                    children: [
-                                      Container(
-                                        width: 100,
-                                        height: 100,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          border:
-                                              Border.all(color: Colors.grey),
-                                        ),
-                                        child: Image.network(
-                                          _galleryImages[index],
-                                          width: 100,
-                                          height: 100,
-                                          fit: BoxFit.cover,
-                                          loadingBuilder: (context, child,
-                                              loadingProgress) {
-                                            if (loadingProgress == null)
-                                              return child;
-                                            return Center(
-                                                child:
-                                                    CircularProgressIndicator());
-                                          },
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                            print(
-                                                'Error loading gallery image: $error');
-                                            return const Center(
-                                              child: Icon(Icons.broken_image,
-                                                  color: Colors.grey),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            _galleryImages.removeAt(index);
-                                          });
-                                        },
-                                        child: const CircleAvatar(
-                                          backgroundColor: Colors.red,
-                                          radius: 10,
-                                          child: Icon(Icons.close,
-                                              size: 12, color: Colors.white),
-                                        ),
-                                      ),
-                                    ],
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _galleryImages.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Stack(
+                              alignment: Alignment.topRight,
+                              children: [
+                                Image.network(
+                                  _galleryImages[index],
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _galleryImages.removeAt(index);
+                                    });
+                                  },
+                                  child: const CircleAvatar(
+                                    backgroundColor: Colors.red,
+                                    radius: 10,
+                                    child: Icon(Icons.close,
+                                        size: 12, color: Colors.white),
                                   ),
-                                );
-                              },
+                                ),
+                              ],
                             ),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),

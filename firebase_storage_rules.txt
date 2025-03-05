@@ -1,22 +1,12 @@
-// Add these rules to your Firebase Storage console
+// Updated Firebase Storage Rules
 
+rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
+    // Simpler rules guaranteeing public read access 
     match /{allPaths=**} {
-      // Allow public read access to all files
-      allow read;
-      
-      // Allow authenticated users to write to their own folders
-      match /doctor_images/{userId}/{fileName} {
-        allow write: if request.auth != null && request.auth.uid == userId;
-      }
-      
-      match /doctor_gallery/{userId}/{fileName} {
-        allow write: if request.auth != null && request.auth.uid == userId;
-      }
-      
-      // Default rule - require authentication for writing
-      allow write: if request.auth != null;
+      allow read: if true;  // Anyone can read any file
+      allow write: if request.auth != null;  // Only authenticated users can write
     }
   }
 }

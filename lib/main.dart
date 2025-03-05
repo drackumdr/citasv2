@@ -5,7 +5,6 @@ import 'package:citas_v2/firebase_options.dart';
 import 'package:citas_v2/widgets/role_based_redirect.dart';
 import 'package:citas_v2/theme/app_theme.dart';
 import 'package:intl/date_symbol_data_local.dart'; // Add this import
-import 'package:citas_v2/utils/profile_image_utils.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,16 +27,11 @@ void main() async {
   }
 }
 
-void initializeUtils(BuildContext context) {
-  ProfileImageUtils.devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
-}
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    initializeUtils(context);
     return MaterialApp(
       title: 'Citas App',
       debugShowCheckedModeBanner: false,
